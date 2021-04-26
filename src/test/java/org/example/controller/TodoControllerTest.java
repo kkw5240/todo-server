@@ -1,8 +1,10 @@
 package org.example.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.model.TodoEntity;
 import org.example.model.TodoRequest;
+import org.example.model.TodoResponse;
 import org.example.service.TodoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,7 +69,23 @@ class TodoControllerTest {
     }
 
     @Test
-    void readOne() {
+    void readOne() throws Exception {
+        when(this.todoService.searchById(123L))
+                .thenReturn(this.expected);
+
+        TodoRequest request = new TodoRequest();
+        request.setTitle("Any Title");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String content = mapper.writeValueAsString(request);
+
+        this.mockMvc.perform(
+                        get("/{id}", 123L).contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Test Title"))
+                .andExpect(jsonPath("$.order").value(0L))
+                .andExpect(jsonPath("$.completed").value(false));
     }
 
     @Test
