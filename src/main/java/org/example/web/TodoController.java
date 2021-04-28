@@ -1,6 +1,7 @@
-package org.example.controller;
+package org.example.web;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.TodoEntity;
 import org.example.model.TodoRequest;
 import org.example.model.TodoResponse;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @CrossOrigin
 @AllArgsConstructor
 @RestController
@@ -21,7 +23,7 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<TodoResponse> create(@RequestBody TodoRequest request) {
-        System.out.println("CREATE");
+        log.info("CREATE");
 
         if (ObjectUtils.isEmpty(request.getTitle())) {
             return ResponseEntity.badRequest().build();
@@ -41,7 +43,7 @@ public class TodoController {
 
     @GetMapping("{id}")
     public ResponseEntity<TodoResponse> readOne(@PathVariable Long id) {
-        System.out.println("READ ONE");
+        log.info("READ ONE");
 
         TodoEntity result = this.service.searchById(id);
 
@@ -50,7 +52,7 @@ public class TodoController {
 
     @GetMapping
     public ResponseEntity<List<TodoResponse>> readAll() {
-        System.out.println("READ ALL");
+        log.info("READ ALL");
 
         List<TodoEntity> todoEntities = this.service.searchAll();
         List<TodoResponse> responses = todoEntities.stream()
@@ -62,7 +64,7 @@ public class TodoController {
 
     @PatchMapping("{id}")
     public ResponseEntity<TodoResponse> updateOne(@PathVariable Long id, @RequestBody TodoRequest request) {
-        System.out.println("UPDATE ONE");
+        log.info("UPDATE ONE");
 
         TodoEntity result = this.service.updateById(id, request);
 
@@ -71,7 +73,7 @@ public class TodoController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteOne(@PathVariable Long id) {
-        System.out.println("DELETE ONE");
+        log.info("DELETE ONE");
 
         this.service.deleteById(id);
 
@@ -80,7 +82,7 @@ public class TodoController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteAll() {
-        System.out.println("DELETE ALL");
+        log.info("DELETE ALL");
 
         this.service.deleteAll();
 
